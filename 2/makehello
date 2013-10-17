@@ -1,0 +1,1 @@
+clang++ -shared -W1,-soname,hello.so -o hello.so hello.o

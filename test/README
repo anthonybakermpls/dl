@@ -1,0 +1,11 @@
+On Mac OS X, compile with:
+g++ -dynamiclib -flat_namespace myclass.cc -o myclass.so
+g++ class_user.cc -o class_user
+
+On Linux, compile with:
+g++ -fPIC -shared myclass.cc -o myclass.so
+g++ class_user.cc -ldl -o class_user
+
+If this were for a plugin system, you would use MyClass as a base class and define all the required functions virtual.
+The plugin author would then derive from MyClass, override the virtuals and implement create_object and destroy_object.
+Your main application would not need to be changed in any way.

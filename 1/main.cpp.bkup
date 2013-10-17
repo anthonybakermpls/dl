@@ -1,0 +1,137 @@
+
+// Operating system includes
+#include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h>
+
+// C++ includes
+#include <iostream>
+#include <fstream>
+#include <string>
+
+
+// set default global namespace
+using namespace std;
+
+
+int main(int argc, char** argv)
+{
+
+
+
+
+
+
+
+
+
+	string line;
+	ifstream f2("main.cpp");
+	if(f2.is_open())
+	{
+
+
+		ofstream f;
+		f.open("main2.cpp");
+
+
+
+
+		while(getline(f2,line))
+		{
+			f << line << endl;
+		}
+
+
+
+
+		f.close();
+
+
+
+		f2.close();
+	}
+	else cout << "Unable to open file" << endl;
+
+
+
+	int rc;
+    pid_t pid;
+	int status,died;
+
+
+
+
+
+
+    cout << "mv main2.cpp main.cpp" << endl;
+	switch(pid=fork())
+	{
+
+        case -1: cout << "Can't fork." << endl;
+            exit(-1);
+
+        case 0: // child runs here
+            rc=execl("/usr/bin/mv", "mv", "main2.cpp", "main.cpp", (char*)0);
+
+
+        default: died=wait(&status); // parent code here
+
+            if(WIFEXITED(status))
+            cout << "The child, pid=" << pid << ", has returned " << WEXITSTATUS(status) << endl;
+            else
+            cout << "The child process was sent a " << WTERMSIG(status) << " signal\n";
+
+            cout << "Parent done." << endl;
+	}
+
+    cout << "rm main2.cpp" << endl;
+	switch(pid=fork())
+	{
+
+        case -1: cout << "Can't fork." << endl;
+            exit(-1);
+
+        case 0: // child runs here
+            rc=execl("/bin/rm", "rm", "main2.cpp", (char*)0);
+
+
+        default: died=wait(&status); // parent code here
+
+            if(WIFEXITED(status))
+            cout << "The child, pid=" << pid << ", has returned " << WEXITSTATUS(status) << endl;
+            else
+            cout << "The child process was sent a " << WTERMSIG(status) << " signal\n";
+
+            cout << "Parent done." << endl;
+	}
+
+
+
+
+
+    cout << "clang++ main.cpp -o a.out" << endl;
+	switch(pid=fork())
+	{
+
+        case -1: cout << "Can't fork." << endl;
+            exit(-1);
+
+        case 0: // child runs here
+            rc=execl("/usr/bin/clang++", "clang++", "main.cpp", "-o","a.out", (char*)0);
+
+
+        default: died=wait(&status); // parent code here
+
+            if(WIFEXITED(status))
+            cout << "The child, pid=" << pid << ", has returned " << WEXITSTATUS(status) << endl;
+            else
+            cout << "The child process was sent a " << WTERMSIG(status) << " signal\n";
+
+            cout << "Parent done." << endl;
+	}
+
+	return 0;
+}
+
+

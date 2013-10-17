@@ -1,0 +1,2 @@
+clang++ -c -fPIC abc.cpp -o abc.o
+clang++ -shared -W1,-soname,libabc.so -o libabc.so abc.o
