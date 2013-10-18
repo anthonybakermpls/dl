@@ -1,4 +1,4 @@
-dlload
+dl
 ======
 
 Dynamic library loading tests
